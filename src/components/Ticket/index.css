@@ -1,0 +1,27 @@
+.Ticket {
+  font-family: "Courier New", Courier, monospace, sans-serif;
+  text-align: center;
+  display: inline-block;
+  margin: 5px 5px 25px 5px;
+  padding: 25px;
+
+  background: url(../../images/bg.jpg) left top;
+  overflow: hidden;
+}
+
+.Ticket table {
+  border-collapse: collapse;
+}
+
+.Ticket td,
+.Ticket th {
+  border: 1px dashed black;
+}
+
+.TicketField__footer {
+  margin-top: 10px;
+}
+
+.TicketField__ticket-number {
+  letter-spacing: 2px;
+}

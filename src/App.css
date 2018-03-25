@@ -1,0 +1,19 @@
+.App__tickets {
+  /* text-align: center; */
+  padding: 15px;
+}
+
+.App__header {
+  font-size: 18px;
+  padding: 20px;
+  background-color: #e5e5e5;
+}
+
+.App__rolled-balls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+  align-items: center;
+  min-height: 50px;
+  background-color: #efefef;
+}

@@ -1,0 +1,26 @@
+.TicketField {
+  padding: 5px;
+  height: 15px;
+  width: 50px;
+  font-size: 18px;
+}
+
+.TicketField__title {
+  text-align: center;
+  background-color: transparent;
+}
+
+.TicketField--crossed-out {
+  background-image: linear-gradient(
+      to bottom right,
+      transparent calc(50% - 1px),
+      black,
+      transparent calc(50% + 1px)
+    ),
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 1px),
+      black,
+      transparent calc(50% + 1px)
+    );
+}
