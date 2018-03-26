@@ -30,24 +30,53 @@ const ticket2 = {
 };
 
 class App extends Component {
-  state = {
-    rolledValues: [],
-    value: ""
+  constructor(props) {
+    super(props);
+    this.state = this.getInitialState();
+  }
+
+  getInitialState = () => {
+    const initialState = {
+      rolledValues: [],
+      value: "",
+      removeValue: ""
+    };
+    return initialState;
   };
+
+  resetState = () => {
+    this.setState(this.getInitialState());
+  };
+
+  pushStateToStorage = () =>
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
 
   crossOutNumber = number => {
     this.state.rolledValues.push(number);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+    this.pushStateToStorage();
   };
 
-  handleEnteredNumber = e => {
-    const inputValue = e.target.value;
+  removeNumber = number => {
+    console.log(this.state.rolledValues);
+
+    const newRolledValues = this.state.rolledValues.filter(function(item) {
+      return item !== number;
+    });
+    console.log(newRolledValues);
+    this.setState({ rolledValues: newRolledValues });
+  };
+
+  handleInput = inputValue => {
     const regexDigits = /\D/;
     const regexTwoDigits = /(^[\d]{2})[\d]/;
     const value = inputValue
       .replace(regexDigits, "")
       .replace(regexTwoDigits, "$1");
-    this.setState({ value });
+    return value;
+  };
+
+  handleEnteredNumber = e => {
+    this.setState({ value: this.handleInput(e.target.value) });
   };
 
   handleEnteredNumberCrossout = e => {
@@ -64,6 +93,24 @@ class App extends Component {
     this.setState({ value: "" });
   };
 
+  invalidateCache = () => {
+    if (
+      window.confirm("Ar tikrai? Bus ištrinti bilietai ir kamuoliukų istorija.")
+    ) {
+      localStorage.removeItem(STORAGE_KEY);
+      this.resetState();
+    }
+  };
+
+  removeLastRolledValue = () => {
+    if (
+      window.confirm("Ar tikrai norite pašalinti paskutinį ridentą kamuoliuką?")
+    ) {
+      this.setState({ rolledValues: this.state.rolledValues.slice(0, -1) });
+      this.pushStateToStorage();
+    }
+  };
+
   componentWillMount() {
     var cache = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (cache != null) {
@@ -75,26 +122,45 @@ class App extends Component {
     const { rolledValues } = this.state;
     return (
       <div className="App">
-        <div className="App__header">
-          <form onSubmit={this.handleEnteredNumberCrossout}>
-            <label htmlFor="ticketNumber">Įveskite skaičių: </label>
-            <Input
-              id="ticketNumber"
-              value={this.state.value}
-              onChange={this.handleEnteredNumber}
-            />
-          </form>
+        <div className="App__header d-flex flex-wrap justify-content-between align-items-center">
+          <div className="d-flex flex-wrap">
+            <form onSubmit={this.handleEnteredNumberCrossout} className="mr-3">
+              <label htmlFor="numberToAdd">Pridėti: </label>
+              <Input
+                id="numberToAdd"
+                value={this.state.value}
+                onChange={this.handleEnteredNumber}
+                className="ml-1 text-center"
+              />
+            </form>
+          </div>
+          <div>
+            <a href="#is-naujo" onClick={this.invalidateCache}>
+              Iš naujo
+            </a>
+          </div>
         </div>
         <div className="App__rolled-balls-bar">
           {rolledValues.length ? (
-            rolledValues.map((value, index) => (
-              <Ball key={index} value={value} />
-            ))
+            <div className="d-flex align-items-center w-100">
+              <div style={{ flex: 1 }}>
+                {rolledValues.map((value, index) => (
+                  <Ball key={index} value={value} className="d-inline-block" />
+                ))}
+              </div>
+              <a
+                href="#atgal"
+                onClick={this.removeLastRolledValue}
+                className="ml-2"
+              >
+                Trinti
+              </a>
+            </div>
           ) : (
             <div>Nėra išridentų kamuoliukų</div>
           )}
         </div>
-        <div className="App__tickets">
+        <div className="App__tickets text-center">
           <Ticket rolledValues={this.state.rolledValues} {...ticket1} />
           <Ticket rolledValues={this.state.rolledValues} {...ticket2} />
         </div>
