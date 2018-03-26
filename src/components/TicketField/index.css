@@ -14,13 +14,13 @@
   background-image: linear-gradient(
       to bottom right,
       transparent calc(50% - 1px),
-      black,
+      #555,
       transparent calc(50% + 1px)
     ),
     linear-gradient(
       to top right,
       transparent calc(50% - 1px),
-      black,
+      #555,
       transparent calc(50% + 1px)
     );
 }
