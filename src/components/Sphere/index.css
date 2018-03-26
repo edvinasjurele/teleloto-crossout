@@ -1,0 +1,53 @@
+.Sphere {
+  line-height: 34px;
+  text-align: center;
+  display: block;
+  background: black;
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  margin: 0;
+  color: white;
+}
+
+.Sphere.Sphere--blue {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(0, 0, 255, 0.75) 40%,
+    rgba(0, 0, 55, 1) 100%
+  );
+}
+
+.Sphere.Sphere--black {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(60, 60, 60, 0.75) 40%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
+.Sphere.Sphere--red {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 0, 0, 0.75) 40%,
+    rgba(55, 0, 0, 1) 100%
+  );
+}
+
+.Sphere.Sphere--yellow {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgb(240, 240, 0) 40%,
+    rgba(55, 55, 0, 1) 100%
+  );
+  color: black;
+}
+
+.Sphere.Sphere--green {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(0, 245, 0, 1) 40%,
+    rgba(0, 55, 0, 1) 100%
+  );
+  color: black;
+}

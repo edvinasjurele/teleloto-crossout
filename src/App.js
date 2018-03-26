@@ -3,6 +3,7 @@ import "./App.css";
 
 import Ticket from "./components/Ticket";
 import Ball from "./components/Ball";
+import Sphere from "./components/Sphere";
 import Input from "./components/Input";
 
 const STORAGE_KEY = "appState";
@@ -122,47 +123,83 @@ class App extends Component {
     const { rolledValues } = this.state;
     return (
       <div className="App">
-        <div className="App__header d-flex flex-wrap justify-content-between align-items-center">
-          <div className="d-flex flex-wrap">
-            <form onSubmit={this.handleEnteredNumberCrossout} className="mr-3">
-              <label htmlFor="numberToAdd">Pridėti: </label>
-              <Input
-                id="numberToAdd"
-                value={this.state.value}
-                onChange={this.handleEnteredNumber}
-                className="ml-1 text-center"
-              />
-            </form>
-          </div>
-          <div>
-            <a href="#is-naujo" onClick={this.invalidateCache}>
-              Iš naujo
-            </a>
-          </div>
-        </div>
-        <div className="App__rolled-balls-bar">
-          {rolledValues.length ? (
-            <div className="d-flex align-items-center w-100">
-              <div style={{ flex: 1 }}>
-                {rolledValues.map((value, index) => (
-                  <Ball key={index} value={value} className="d-inline-block" />
-                ))}
+        <div className="App__header pt-3 pb-2">
+          <div className="container">
+            <div className="d-flex flex-wrap justify-content-between align-items-center">
+              <div className="d-flex flex-wrap">
+                <form onSubmit={this.handleEnteredNumberCrossout}>
+                  <Input
+                    id="numberToAdd"
+                    placeholder="Įveskite kamuoliuką"
+                    size="lg"
+                    value={this.state.value}
+                    onChange={this.handleEnteredNumber}
+                  />
+                </form>
               </div>
-              <a
-                href="#atgal"
-                onClick={this.removeLastRolledValue}
-                className="ml-2"
-              >
-                Trinti
-              </a>
+              <div>
+                <button
+                  type="button"
+                  className="btn btn-light btn-lg"
+                  onClick={this.invalidateCache}
+                >
+                  Iš naujo
+                </button>
+              </div>
             </div>
-          ) : (
-            <div>Nėra išridentų kamuoliukų</div>
-          )}
+          </div>
         </div>
-        <div className="App__tickets text-center">
-          <Ticket rolledValues={this.state.rolledValues} {...ticket1} />
-          <Ticket rolledValues={this.state.rolledValues} {...ticket2} />
+        <div className="App__balls-bar d-flex flex-wrap align-items-center">
+          <div className="container">
+            {rolledValues.length ? (
+              <div className="d-flex align-items-center w-100">
+                <div style={{ flex: 1 }}>
+                  {rolledValues.map((value, index) => (
+                    <Sphere
+                      key={index}
+                      value={value}
+                      className="d-inline-block mr-1 my-1"
+                    />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-light ml-2"
+                  onClick={this.removeLastRolledValue}
+                >
+                  Trinti
+                </button>
+              </div>
+            ) : (
+              <div>Nėra išridentų kamuoliukų</div>
+            )}
+          </div>
+        </div>
+        <div className="container text-center">
+          <div className="row mt-3">
+            <div className="circle" />
+            <div className="col-12 col-md-6 col-lg-4">
+              <Ticket
+                className="d-inline-block text-center my-2"
+                rolledValues={this.state.rolledValues}
+                {...ticket1}
+              />
+            </div>
+            <div className="col-12 col-md-6 col-lg-4">
+              <Ticket
+                className="d-inline-block text-center my-2"
+                rolledValues={this.state.rolledValues}
+                {...ticket2}
+              />
+            </div>
+            <div className="col-12 col-md-6 col-lg-4">
+              <Ticket
+                className="d-inline-block text-center my-2"
+                rolledValues={this.state.rolledValues}
+                {...ticket2}
+              />
+            </div>
+          </div>
         </div>
       </div>
     );
