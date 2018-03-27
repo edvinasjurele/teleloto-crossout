@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import "./App.css";
 
 import Ticket from "./components/Ticket";
-import Ball from "./components/Ball";
 import Sphere from "./components/Sphere";
 import Input from "./components/Input";
 
