@@ -34,7 +34,7 @@ const Ticket = ({ values, rolledValues, number, className, ...props }) => (
       </tbody>
     </table>
     <div className="TicketField__footer">
-      {number && <p className="TicketField__ticket-number">{number}</p>}
+      {number && <p className="TicketField__ticket-number mt-2">{number}</p>}
     </div>
   </div>
 );

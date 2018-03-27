@@ -1,32 +1,31 @@
 import React, { Component } from "react";
 
-import Ticket from "./components/Ticket";
-import Sphere from "./components/Sphere";
-import Input from "./components/Input";
+import { Ticket, Sphere, Input, Status } from "./components";
 
 const STORAGE_KEY = "appState";
 
-const ticket1 = {
-  values: [
-    [5, 16, 42, 49, 65],
-    [7, 23, 44, 46, 72],
-    [11, 26, 43, 50, 64],
-    [14, 29, 35, 48, 66],
-    [6, 24, 41, 60, 69]
-  ],
-  number: "0642953"
-};
-
-const ticket2 = {
-  values: [
-    [7, 27, 39, 51, 66],
-    [11, 20, 33, 49, 68],
-    [8, 18, 45, 57, 75],
-    [13, 21, 36, 53, 65],
-    [10, 30, 37, 52, 72]
-  ],
-  number: "0657387"
-};
+const tickets = [
+  {
+    values: [
+      [5, 16, 42, 49, 65],
+      [7, 23, 44, 46, 72],
+      [11, 26, 43, 50, 64],
+      [14, 29, 35, 48, 66],
+      [6, 24, 41, 60, 69]
+    ],
+    number: "0642953"
+  },
+  {
+    values: [
+      [7, 27, 39, 51, 66],
+      [11, 20, 33, 49, 68],
+      [8, 18, 45, 57, 75],
+      [13, 21, 36, 53, 65],
+      [10, 30, 37, 52, 72]
+    ],
+    number: "0657387"
+  }
+];
 
 class App extends Component {
   constructor(props) {
@@ -38,8 +37,13 @@ class App extends Component {
     const initialState = {
       rolledValues: [],
       value: "",
-      removeValue: ""
+      removeValue: "",
+      status: {
+        color: "default",
+        message: ""
+      }
     };
+
     return initialState;
   };
 
@@ -50,19 +54,37 @@ class App extends Component {
   pushStateToStorage = () =>
     localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
 
-  crossOutNumber = number => {
-    this.state.rolledValues.push(number);
+  setStatusMessage = (color, message) => {
+    this.setState({ status: { color, message } });
+  };
+
+  resetStatusMessage = () => {
+    console.log(this.getInitialState().status);
+    this.setState({ status: this.getInitialState().status });
     this.pushStateToStorage();
   };
 
-  removeNumber = number => {
-    console.log(this.state.rolledValues);
-
-    const newRolledValues = this.state.rolledValues.filter(function(item) {
-      return item !== number;
+  countOccurencies = number => {
+    let occurenciesCount = 0;
+    tickets.map(ticket => {
+      const arr = ticket.values.toString().split(",");
+      occurenciesCount += arr.reduce((a, v) => (v === number ? ++a : a), 0);
     });
-    console.log(newRolledValues);
-    this.setState({ rolledValues: newRolledValues });
+    return occurenciesCount;
+  };
+
+  crossOutNumber = number => {
+    this.state.rolledValues.push(number);
+    const count = this.countOccurencies(number);
+    if (count > 0) {
+      count === 1
+        ? this.setStatusMessage("green", `Išbrauktas ${count} langelis`)
+        : this.setStatusMessage("green", `Išbraukti ${count} langeliai`);
+    } else {
+      this.setStatusMessage("default", "Nerasta");
+    }
+
+    this.pushStateToStorage();
   };
 
   handleInput = inputValue => {
@@ -106,6 +128,7 @@ class App extends Component {
       window.confirm("Ar tikrai norite pašalinti paskutinį ridentą kamuoliuką?")
     ) {
       this.setState({ rolledValues: this.state.rolledValues.slice(0, -1) });
+      this.resetStatusMessage();
       this.pushStateToStorage();
     }
   };
@@ -118,31 +141,41 @@ class App extends Component {
   }
 
   render() {
-    const { rolledValues } = this.state;
+    const { rolledValues, value, status } = this.state;
     return (
       <div className="App">
         <div className="App__header pt-3 pb-2">
           <div className="container">
-            <div className="d-flex flex-wrap justify-content-between align-items-center">
-              <div className="d-flex flex-wrap">
-                <form onSubmit={this.handleEnteredNumberCrossout}>
+            <div className="row">
+              <div className="col-12 col-md-6 py-1">
+                <form
+                  onSubmit={this.handleEnteredNumberCrossout}
+                  className="mr-0 mr-md-3"
+                >
                   <Input
                     id="numberToAdd"
                     placeholder="Įveskite kamuoliuką"
                     size="lg"
-                    value={this.state.value}
+                    value={value}
                     onChange={this.handleEnteredNumber}
                   />
                 </form>
               </div>
-              <div>
-                <button
-                  type="button"
-                  className="btn btn-light btn-lg"
-                  onClick={this.invalidateCache}
-                >
-                  Iš naujo
-                </button>
+              <div className="col-12 col-md-6 py-1">
+                <div className="row">
+                  <div className="col-6 align-items-center d-flex">
+                    <Status {...status} />
+                  </div>
+                  <div className="col-6 text-right">
+                    <button
+                      type="button"
+                      className="btn btn-light btn-lg"
+                      onClick={this.invalidateCache}
+                    >
+                      Iš naujo
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -175,28 +208,15 @@ class App extends Component {
         </div>
         <div className="container text-center">
           <div className="row mt-3">
-            <div className="circle" />
-            <div className="col-12 col-md-6 col-lg-4">
-              <Ticket
-                className="d-inline-block text-center my-2"
-                rolledValues={this.state.rolledValues}
-                {...ticket1}
-              />
-            </div>
-            <div className="col-12 col-md-6 col-lg-4">
-              <Ticket
-                className="d-inline-block text-center my-2"
-                rolledValues={this.state.rolledValues}
-                {...ticket2}
-              />
-            </div>
-            <div className="col-12 col-md-6 col-lg-4">
-              <Ticket
-                className="d-inline-block text-center my-2"
-                rolledValues={this.state.rolledValues}
-                {...ticket2}
-              />
-            </div>
+            {tickets.map(ticket => (
+              <div className="col-12 col-md-6 col-lg-4">
+                <Ticket
+                  className="d-inline-block text-center my-2"
+                  rolledValues={this.state.rolledValues}
+                  {...ticket}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
