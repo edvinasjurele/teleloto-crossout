@@ -41,6 +41,9 @@ class App extends Component {
       status: {
         color: "default",
         message: ""
+      },
+      options: {
+        isTicketsClickable: false
       }
     };
 
@@ -59,7 +62,6 @@ class App extends Component {
   };
 
   resetStatusMessage = () => {
-    console.log(this.getInitialState().status);
     this.setState({ status: this.getInitialState().status });
     this.pushStateToStorage();
   };
@@ -74,7 +76,7 @@ class App extends Component {
   };
 
   crossOutNumber = number => {
-    this.state.rolledValues.push(number);
+    this.state.rolledValues.push(number.toString());
     const count = this.countOccurencies(number);
     if (count > 0) {
       count === 1
@@ -140,8 +142,21 @@ class App extends Component {
     }
   }
 
+  handleIsClickableChange = () =>
+    this.setState({
+      options: {
+        ...this.state.options,
+        isTicketsClickable: !this.state.options.isTicketsClickable
+      }
+    });
+
   render() {
-    const { rolledValues, value, status } = this.state;
+    const {
+      rolledValues,
+      value,
+      status,
+      options: { isTicketsClickable }
+    } = this.state;
     return (
       <div className="App">
         <div className="App__header pt-3 pb-2">
@@ -202,21 +217,46 @@ class App extends Component {
                 </button>
               </div>
             ) : (
-              <div>Nėra išridentų kamuoliukų</div>
+              <div className="text-center text-sm-left">
+                Nėra išridentų kamuoliukų
+              </div>
             )}
           </div>
         </div>
         <div className="container text-center">
           <div className="row mt-3">
-            {tickets.map(ticket => (
-              <div className="col-12 col-md-6 col-lg-4">
+            {tickets.map((ticket, index) => (
+              <div key={index} className="col-12 col-md-6 col-lg-4">
                 <Ticket
                   className="d-inline-block text-center my-2"
                   rolledValues={this.state.rolledValues}
+                  isClickable={isTicketsClickable}
+                  clickHandler={value => this.crossOutNumber(value)}
                   {...ticket}
                 />
               </div>
             ))}
+          </div>
+        </div>
+        <div className="container">
+          <div className="row my-4">
+            <div className="col-12 mb-2">
+              <p>Nustatymai:</p>
+            </div>
+            <div className="col-12">
+              <div className="form-check form-check-inline">
+                <label className="form-check-label">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="inlineCheckbox1"
+                    checked={isTicketsClickable}
+                    onClick={this.handleIsClickableChange}
+                  />
+                  Bilietų interaktyvumas
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </div>

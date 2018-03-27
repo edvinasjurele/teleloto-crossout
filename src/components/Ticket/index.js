@@ -7,7 +7,15 @@ import "./index.css";
 
 const headerLetters = ["M", "J", "R", "G", "Ž"];
 
-const Ticket = ({ values, rolledValues, number, className, ...props }) => (
+const Ticket = ({
+  values,
+  rolledValues,
+  number,
+  isClickable,
+  clickHandler,
+  className,
+  ...props
+}) => (
   <div className={cx("Ticket", className)} {...props}>
     <table>
       <thead>
@@ -24,6 +32,8 @@ const Ticket = ({ values, rolledValues, number, className, ...props }) => (
               <TicketField
                 key={index2}
                 isCrossedOut={rolledValues.includes(collumn.toString())}
+                isClickable={isClickable}
+                clickHandler={clickHandler}
                 value={
                   collumn.toString().length === 1 ? `0${collumn}` : collumn
                 }

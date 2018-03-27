@@ -23,4 +23,8 @@
         transparent calc(50% + 1px)
       );
   }
+
+  &--clickable {
+    cursor: pointer;
+  }
 }

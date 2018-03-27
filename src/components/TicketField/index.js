@@ -4,14 +4,28 @@ import cx from "classnames";
 
 import "./index.css";
 
-const TicketField = ({ value, isCrossedOut, ...props }) => (
-  <td
-    className={cx("TicketField", { "TicketField--crossed-out": isCrossedOut })}
-    {...props}
-  >
-    {value}
-  </td>
-);
+const TicketField = ({
+  value,
+  isCrossedOut,
+  isClickable,
+  clickHandler,
+  ...props
+}) => {
+  const shouldInteract = isClickable && !isCrossedOut;
+  return (
+    <td
+      className={cx(
+        "TicketField",
+        { "TicketField--crossed-out": isCrossedOut },
+        { "TicketField--clickable": shouldInteract }
+      )}
+      onClick={shouldInteract ? () => clickHandler(+value) : undefined}
+      {...props}
+    >
+      {value}
+    </td>
+  );
+};
 
 TicketField.propTypes = {
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
