@@ -4,21 +4,21 @@
 
   background: url(../../images/bg.jpg) left top;
   overflow: hidden;
-}
 
-.Ticket table {
-  border-collapse: collapse;
-}
+  table {
+    border-collapse: collapse;
+  }
 
-.Ticket td,
-.Ticket th {
-  border: 1px dashed black;
-}
+  td,
+  th {
+    border: 1px dashed black;
+  }
 
-.TicketField__footer {
-  margin-top: 10px;
-}
+  &__footer {
+    margin-top: 10px;
+  }
 
-.TicketField__ticket-number {
-  letter-spacing: 2px;
+  &__ticket-number {
+    letter-spacing: 2px;
+  }
 }
