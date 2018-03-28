@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Ticket, Sphere, Input, Status } from './components';
+import { Ticket, TicketPlaceholder, Sphere, Input, Status } from './components';
 
 const STORAGE_KEY = 'appState';
 
@@ -44,6 +44,7 @@ class App extends Component {
       },
       options: {
         isTicketsClickable: false,
+        isEditMode: false,
       },
       tickets: demoTickets,
     };
@@ -165,11 +166,20 @@ class App extends Component {
     });
   };
 
+  handleEditModeChange = () => {
+    this.setState({
+      options: {
+        ...this.state.options,
+        isEditMode: !this.state.options.isEditMode,
+      },
+    });
+  };
+
   removeTicketByIndex = id => {
     if (window.confirm('Ar tikrai? Bus ištrintas pasirinktas bilietas.')) {
-      console.log(this.state.tickets.filter((item, index) => index === id));
+      console.log(this.state.tickets.filter((item, index) => index !== id));
       this.setState({
-        tickets: this.state.tickets.filter((item, index) => index === id),
+        tickets: this.state.tickets.filter((item, index) => index !== id),
       });
     }
   };
@@ -179,9 +189,10 @@ class App extends Component {
       rolledValues,
       value,
       status,
-      options: { isTicketsClickable },
+      options: { isTicketsClickable, isEditMode },
       tickets,
     } = this.state;
+    const isReadyForPlay = !!tickets.length;
     return (
       <div className="App">
         <div className="App__header pt-3 pb-2">
@@ -197,6 +208,7 @@ class App extends Component {
                     placeholder="Įveskite kamuoliuką"
                     size="lg"
                     value={value}
+                    disabled={!isReadyForPlay}
                     onChange={this.handleEnteredNumber}
                   />
                 </form>
@@ -254,7 +266,11 @@ class App extends Component {
               <div key={index} className="col-12 col-md-6 col-lg-4">
                 <Ticket
                   index={index}
-                  onTicketRemove={value => this.removeTicketByIndex(value)}
+                  onTicketRemove={
+                    isEditMode
+                      ? value => this.removeTicketByIndex(value)
+                      : undefined
+                  }
                   className="d-inline-block text-center my-2"
                   rolledValues={this.state.rolledValues}
                   isClickable={isTicketsClickable}
@@ -263,29 +279,48 @@ class App extends Component {
                 />
               </div>
             ))}
+            {(isEditMode || !isReadyForPlay) && (
+              <div className="col-12 col-md-6 col-lg-4">
+                <TicketPlaceholder className="my-2" />
+              </div>
+            )}
           </div>
         </div>
-        <div className="container">
-          <div className="row my-4">
-            <div className="col-12 mb-2">
-              <p>Nustatymai:</p>
-            </div>
-            <div className="col-12">
-              <div className="form-check form-check-inline">
-                <label className="form-check-label">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="inlineCheckbox1"
-                    checked={isTicketsClickable}
-                    onChange={this.handleIsClickableChange}
-                  />
-                  Bilietų interaktyvumas
-                </label>
+        {isReadyForPlay && (
+          <div className="container">
+            <div className="row my-4">
+              <div className="col-12 mb-2">
+                <p>Nustatymai:</p>
+              </div>
+              <div className="col-12">
+                <div className="form-check">
+                  <label className="form-check-label">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="inlineCheckbox1"
+                      checked={isTicketsClickable}
+                      onChange={this.handleIsClickableChange}
+                    />
+                    Bilietų interaktyvumas
+                  </label>
+                </div>
+                <div className="form-check">
+                  <label className="form-check-label">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="inlineCheckbox1"
+                      checked={isEditMode}
+                      onChange={this.handleEditModeChange}
+                    />
+                    Redagavimo režimas
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
