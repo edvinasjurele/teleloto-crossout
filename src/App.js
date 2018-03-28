@@ -4,7 +4,7 @@ import { Ticket, Sphere, Input, Status } from './components';
 
 const STORAGE_KEY = 'appState';
 
-const tickets = [
+const demoTickets = [
   {
     values: [
       [5, 16, 42, 49, 65],
@@ -45,6 +45,7 @@ class App extends Component {
       options: {
         isTicketsClickable: false,
       },
+      tickets: demoTickets,
     };
 
     return initialState;
@@ -54,8 +55,14 @@ class App extends Component {
     this.setState(this.getInitialState());
   };
 
-  pushStateToStorage = () =>
+  removeLocalStorage = () => {
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
+  pushStateToStorage = () => {
+    this.removeLocalStorage();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+  };
 
   setStatusMessage = (color, message) => {
     this.setState({ status: { color, message } });
@@ -63,14 +70,14 @@ class App extends Component {
 
   resetStatusMessage = () => {
     this.setState({ status: this.getInitialState().status });
-    this.pushStateToStorage();
   };
 
   countOccurencies = number => {
     let occurenciesCount = 0;
-    tickets.map(ticket => {
+    this.state.tickets.map(ticket => {
       const arr = ticket.values.toString().split(',');
       occurenciesCount += arr.reduce((a, v) => (v === number ? ++a : a), 0);
+      return true;
     });
     return occurenciesCount;
   };
@@ -85,8 +92,6 @@ class App extends Component {
     } else {
       this.setStatusMessage('default', 'Nerasta');
     }
-
-    this.pushStateToStorage();
   };
 
   handleInput = inputValue => {
@@ -120,7 +125,7 @@ class App extends Component {
     if (
       window.confirm('Ar tikrai? Bus ištrinti bilietai ir kamuoliukų istorija.')
     ) {
-      localStorage.removeItem(STORAGE_KEY);
+      this.removeLocalStorage();
       this.resetState();
     }
   };
@@ -131,8 +136,12 @@ class App extends Component {
     ) {
       this.setState({ rolledValues: this.state.rolledValues.slice(0, -1) });
       this.resetStatusMessage();
-      this.pushStateToStorage();
     }
+  };
+
+  componentUnmount = () => {
+    this.pushStateToStorage();
+    window.removeEventListener('beforeunload', this.componentUnmount);
   };
 
   componentWillMount() {
@@ -140,15 +149,30 @@ class App extends Component {
     if (cache != null) {
       this.setState({ ...cache, value: '' });
     }
+    window.addEventListener('beforeunload', this.componentUnmount);
   }
 
-  handleIsClickableChange = () =>
+  componentWillUnmount() {
+    this.componentUnmount();
+  }
+
+  handleIsClickableChange = () => {
     this.setState({
       options: {
         ...this.state.options,
         isTicketsClickable: !this.state.options.isTicketsClickable,
       },
     });
+  };
+
+  removeTicketByIndex = id => {
+    if (window.confirm('Ar tikrai? Bus ištrintas pasirinktas bilietas.')) {
+      console.log(this.state.tickets.filter((item, index) => index === id));
+      this.setState({
+        tickets: this.state.tickets.filter((item, index) => index === id),
+      });
+    }
+  };
 
   render() {
     const {
@@ -156,6 +180,7 @@ class App extends Component {
       value,
       status,
       options: { isTicketsClickable },
+      tickets,
     } = this.state;
     return (
       <div className="App">
@@ -228,6 +253,8 @@ class App extends Component {
             {tickets.map((ticket, index) => (
               <div key={index} className="col-12 col-md-6 col-lg-4">
                 <Ticket
+                  index={index}
+                  onTicketRemove={value => this.removeTicketByIndex(value)}
                   className="d-inline-block text-center my-2"
                   rolledValues={this.state.rolledValues}
                   isClickable={isTicketsClickable}
@@ -251,7 +278,7 @@ class App extends Component {
                     type="checkbox"
                     id="inlineCheckbox1"
                     checked={isTicketsClickable}
-                    onClick={this.handleIsClickableChange}
+                    onChange={this.handleIsClickableChange}
                   />
                   Bilietų interaktyvumas
                 </label>

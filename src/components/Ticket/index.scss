@@ -1,7 +1,6 @@
 .Ticket {
-  font-family: "Courier New", Courier, monospace, sans-serif;
-  padding: 25px;
-
+  font-family: 'Courier New', Courier, monospace, sans-serif;
+  position: relative;
   background: url(../../images/bg.jpg) left top;
   overflow: hidden;
 
@@ -21,5 +20,18 @@
 
   &__ticket-number {
     letter-spacing: 2px;
+  }
+
+  &__close {
+    position: absolute;
+    right: 24px;
+    top: 10px;
+    color: darkgrey;
+
+    &:hover,
+    &:active {
+      color: grey;
+      text-decoration: none;
+    }
   }
 }

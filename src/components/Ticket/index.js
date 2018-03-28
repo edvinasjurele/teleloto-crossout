@@ -8,16 +8,27 @@ import './index.css';
 const headerLetters = ['M', 'J', 'R', 'G', 'Ž'];
 
 const Ticket = ({
+  index,
   values,
   rolledValues,
   number,
   isClickable,
   clickHandler,
+  onTicketRemove,
   className,
   ...props
 }) => (
-  <div className={cx('Ticket', className)} {...props}>
-    <table>
+  <div className={cx('Ticket px-4 pb-3 pt-4', className)} {...props}>
+    {onTicketRemove && (
+      <a
+        href="#remove"
+        className="Ticket__close"
+        onClick={() => onTicketRemove(index)}
+      >
+        ✕
+      </a>
+    )}
+    <table className="mt-3">
       <thead>
         <tr>
           {headerLetters.map((letter, index) => (
