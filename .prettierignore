@@ -1,0 +1,10 @@
+*.*
+!*.js
+!*.css
+!*.scss
+!*.json
+!*.md
+
+# npm files
+node_modules
+package.json

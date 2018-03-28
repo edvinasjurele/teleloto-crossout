@@ -1,11 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import cx from "classnames";
-import TicketField from "../TicketField";
+import React from 'react';
+import PropTypes from 'prop-types';
+import cx from 'classnames';
+import TicketField from '../TicketField';
 
-import "./index.css";
+import './index.css';
 
-const headerLetters = ["M", "J", "R", "G", "Ž"];
+const headerLetters = ['M', 'J', 'R', 'G', 'Ž'];
 
 const Ticket = ({
   values,
@@ -16,7 +16,7 @@ const Ticket = ({
   className,
   ...props
 }) => (
-  <div className={cx("Ticket", className)} {...props}>
+  <div className={cx('Ticket', className)} {...props}>
     <table>
       <thead>
         <tr>
@@ -52,12 +52,12 @@ const Ticket = ({
 Ticket.propTypes = {
   values: PropTypes.arrayOf(PropTypes.array.isRequired).isRequired,
   rolledValues: PropTypes.arrayOf(PropTypes.string),
-  className: PropTypes.string
+  className: PropTypes.string,
 };
 
 Ticket.defaultProps = {
   rolledValues: [],
-  className: undefined
+  className: undefined,
 };
 
 export default Ticket;

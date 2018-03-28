@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import cx from "classnames";
+import React from 'react';
+import PropTypes from 'prop-types';
+import cx from 'classnames';
 
-import "./index.css";
+import './index.css';
 
 const TicketField = ({
   value,
@@ -15,9 +15,9 @@ const TicketField = ({
   return (
     <td
       className={cx(
-        "TicketField",
-        { "TicketField--crossed-out": isCrossedOut },
-        { "TicketField--clickable": shouldInteract }
+        'TicketField',
+        { 'TicketField--crossed-out': isCrossedOut },
+        { 'TicketField--clickable': shouldInteract }
       )}
       onClick={shouldInteract ? () => clickHandler(+value) : undefined}
       {...props}
@@ -29,11 +29,11 @@ const TicketField = ({
 
 TicketField.propTypes = {
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  isCrossedOut: PropTypes.bool
+  isCrossedOut: PropTypes.bool,
 };
 
 TicketField.defaultProps = {
-  isCrossedOut: false
+  isCrossedOut: false,
 };
 
 export default TicketField;

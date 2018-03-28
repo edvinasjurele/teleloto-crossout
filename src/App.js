@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { Ticket, Sphere, Input, Status } from "./components";
+import { Ticket, Sphere, Input, Status } from './components';
 
-const STORAGE_KEY = "appState";
+const STORAGE_KEY = 'appState';
 
 const tickets = [
   {
@@ -11,9 +11,9 @@ const tickets = [
       [7, 23, 44, 46, 72],
       [11, 26, 43, 50, 64],
       [14, 29, 35, 48, 66],
-      [6, 24, 41, 60, 69]
+      [6, 24, 41, 60, 69],
     ],
-    number: "0642953"
+    number: '0642953',
   },
   {
     values: [
@@ -21,10 +21,10 @@ const tickets = [
       [11, 20, 33, 49, 68],
       [8, 18, 45, 57, 75],
       [13, 21, 36, 53, 65],
-      [10, 30, 37, 52, 72]
+      [10, 30, 37, 52, 72],
     ],
-    number: "0657387"
-  }
+    number: '0657387',
+  },
 ];
 
 class App extends Component {
@@ -36,15 +36,15 @@ class App extends Component {
   getInitialState = () => {
     const initialState = {
       rolledValues: [],
-      value: "",
-      removeValue: "",
+      value: '',
+      removeValue: '',
       status: {
-        color: "default",
-        message: ""
+        color: 'default',
+        message: '',
       },
       options: {
-        isTicketsClickable: false
-      }
+        isTicketsClickable: false,
+      },
     };
 
     return initialState;
@@ -69,7 +69,7 @@ class App extends Component {
   countOccurencies = number => {
     let occurenciesCount = 0;
     tickets.map(ticket => {
-      const arr = ticket.values.toString().split(",");
+      const arr = ticket.values.toString().split(',');
       occurenciesCount += arr.reduce((a, v) => (v === number ? ++a : a), 0);
     });
     return occurenciesCount;
@@ -80,10 +80,10 @@ class App extends Component {
     const count = this.countOccurencies(number);
     if (count > 0) {
       count === 1
-        ? this.setStatusMessage("green", `Išbrauktas ${count} langelis`)
-        : this.setStatusMessage("green", `Išbraukti ${count} langeliai`);
+        ? this.setStatusMessage('green', `Išbrauktas ${count} langelis`)
+        : this.setStatusMessage('green', `Išbraukti ${count} langeliai`);
     } else {
-      this.setStatusMessage("default", "Nerasta");
+      this.setStatusMessage('default', 'Nerasta');
     }
 
     this.pushStateToStorage();
@@ -93,8 +93,8 @@ class App extends Component {
     const regexDigits = /\D/;
     const regexTwoDigits = /(^[\d]{2})[\d]/;
     const value = inputValue
-      .replace(regexDigits, "")
-      .replace(regexTwoDigits, "$1");
+      .replace(regexDigits, '')
+      .replace(regexTwoDigits, '$1');
     return value;
   };
 
@@ -113,12 +113,12 @@ class App extends Component {
     ) {
       this.crossOutNumber(value);
     }
-    this.setState({ value: "" });
+    this.setState({ value: '' });
   };
 
   invalidateCache = () => {
     if (
-      window.confirm("Ar tikrai? Bus ištrinti bilietai ir kamuoliukų istorija.")
+      window.confirm('Ar tikrai? Bus ištrinti bilietai ir kamuoliukų istorija.')
     ) {
       localStorage.removeItem(STORAGE_KEY);
       this.resetState();
@@ -127,7 +127,7 @@ class App extends Component {
 
   removeLastRolledValue = () => {
     if (
-      window.confirm("Ar tikrai norite pašalinti paskutinį ridentą kamuoliuką?")
+      window.confirm('Ar tikrai norite pašalinti paskutinį ridentą kamuoliuką?')
     ) {
       this.setState({ rolledValues: this.state.rolledValues.slice(0, -1) });
       this.resetStatusMessage();
@@ -138,7 +138,7 @@ class App extends Component {
   componentWillMount() {
     var cache = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (cache != null) {
-      this.setState({ ...cache, value: "" });
+      this.setState({ ...cache, value: '' });
     }
   }
 
@@ -146,8 +146,8 @@ class App extends Component {
     this.setState({
       options: {
         ...this.state.options,
-        isTicketsClickable: !this.state.options.isTicketsClickable
-      }
+        isTicketsClickable: !this.state.options.isTicketsClickable,
+      },
     });
 
   render() {
@@ -155,7 +155,7 @@ class App extends Component {
       rolledValues,
       value,
       status,
-      options: { isTicketsClickable }
+      options: { isTicketsClickable },
     } = this.state;
     return (
       <div className="App">
