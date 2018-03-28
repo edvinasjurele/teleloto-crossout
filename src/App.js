@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import cx from 'classnames';
 
 import { Ticket, TicketPlaceholder, Sphere, Input, Status } from './components';
-
 const STORAGE_KEY = 'appState';
 
 const demoTickets = [
@@ -46,10 +46,19 @@ class App extends Component {
         isTicketsClickable: false,
         isEditMode: false,
       },
-      tickets: demoTickets,
+      tickets: [],
     };
 
     return initialState;
+  };
+
+  getDemoTickets = () => {
+    this.setState({ tickets: demoTickets });
+    this.disableEditMode();
+  };
+
+  addTicket = () => {
+    console.log('TODO: Add a ticket functionality');
   };
 
   resetState = () => {
@@ -175,9 +184,17 @@ class App extends Component {
     });
   };
 
+  disableEditMode = () => {
+    this.setState({
+      options: {
+        ...this.state.options,
+        isEditMode: false,
+      },
+    });
+  };
+
   removeTicketByIndex = id => {
     if (window.confirm('Ar tikrai? Bus ištrintas pasirinktas bilietas.')) {
-      console.log(this.state.tickets.filter((item, index) => index !== id));
       this.setState({
         tickets: this.state.tickets.filter((item, index) => index !== id),
       });
@@ -208,7 +225,7 @@ class App extends Component {
                     placeholder="Įveskite kamuoliuką"
                     size="lg"
                     value={value}
-                    disabled={!isReadyForPlay}
+                    disabled={!isReadyForPlay || isEditMode}
                     onChange={this.handleEnteredNumber}
                   />
                 </form>
@@ -281,7 +298,12 @@ class App extends Component {
             ))}
             {(isEditMode || !isReadyForPlay) && (
               <div className="col-12 col-md-6 col-lg-4">
-                <TicketPlaceholder className="my-2" />
+                <TicketPlaceholder
+                  demoHandler={this.getDemoTickets}
+                  addTicketHandler={this.addTicket}
+                  isReadyForPlay={isReadyForPlay}
+                  className="my-2"
+                />
               </div>
             )}
           </div>
@@ -294,12 +316,15 @@ class App extends Component {
               </div>
               <div className="col-12">
                 <div className="form-check">
-                  <label className="form-check-label">
+                  <label
+                    className={cx('form-check-label', { muted: isEditMode })}
+                  >
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      id="inlineCheckbox1"
+                      id="checkbox_click_mode"
                       checked={isTicketsClickable}
+                      disabled={isEditMode}
                       onChange={this.handleIsClickableChange}
                     />
                     Bilietų interaktyvumas
@@ -310,7 +335,7 @@ class App extends Component {
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      id="inlineCheckbox1"
+                      id="checkbox_edit_mode"
                       checked={isEditMode}
                       onChange={this.handleEditModeChange}
                     />
