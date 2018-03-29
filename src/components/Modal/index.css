@@ -1,0 +1,1 @@
+.Modal{position:absolute;top:40px;left:40px;right:40px;bottom:40px;background-color:#fff;border-radius:5px;overflow:hidden}.Modal__close{position:absolute;right:14px;top:10px;color:darkgrey;z-index:1}.Modal__close:hover,.Modal__close:active{cursor:pointer;color:grey;text-decoration:none}.Overlay{position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.3)}

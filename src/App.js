@@ -1,31 +1,17 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
 
-import { Ticket, TicketPlaceholder, Sphere, Input, Status } from './components';
+import {
+  Ticket,
+  TicketPlaceholder,
+  Sphere,
+  Input,
+  Status,
+  ModalCreateTicket,
+} from './components';
+import { handleLottoInput } from './utils';
+import { DEMO_TICKETS } from './constants';
 const STORAGE_KEY = 'appState';
-
-const demoTickets = [
-  {
-    values: [
-      [5, 16, 42, 49, 65],
-      [7, 23, 44, 46, 72],
-      [11, 26, 43, 50, 64],
-      [14, 29, 35, 48, 66],
-      [6, 24, 41, 60, 69],
-    ],
-    number: '0642953',
-  },
-  {
-    values: [
-      [7, 27, 39, 51, 66],
-      [11, 20, 33, 49, 68],
-      [8, 18, 45, 57, 75],
-      [13, 21, 36, 53, 65],
-      [10, 30, 37, 52, 72],
-    ],
-    number: '0657387',
-  },
-];
 
 class App extends Component {
   constructor(props) {
@@ -47,13 +33,14 @@ class App extends Component {
         isEditMode: false,
       },
       tickets: [],
+      modalCreateTicketOpen: false,
     };
 
     return initialState;
   };
 
   getDemoTickets = () => {
-    this.setState({ tickets: demoTickets });
+    this.setState({ tickets: DEMO_TICKETS });
     this.disableEditMode();
   };
 
@@ -74,11 +61,11 @@ class App extends Component {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
   };
 
-  setStatusMessage = (color, message) => {
-    this.setState({ status: { color, message } });
+  setStatus = status => {
+    this.setState({ status });
   };
 
-  resetStatusMessage = () => {
+  resetStatus = () => {
     this.setState({ status: this.getInitialState().status });
   };
 
@@ -92,29 +79,27 @@ class App extends Component {
     return occurenciesCount;
   };
 
+  handleEnteredNumber = e => {
+    this.setState({ value: handleLottoInput(e.target.value) });
+  };
+
   crossOutNumber = number => {
     this.state.rolledValues.push(number.toString());
     const count = this.countOccurencies(number);
     if (count > 0) {
-      count === 1
-        ? this.setStatusMessage('green', `Išbrauktas ${count} langelis`)
-        : this.setStatusMessage('green', `Išbraukti ${count} langeliai`);
+      this.setStatus({
+        color: 'green',
+        message:
+          count === 1
+            ? `Išbrauktas ${count} langelis`
+            : `Išbraukti ${count} langeliai`,
+      });
     } else {
-      this.setStatusMessage('default', 'Nerasta');
+      this.setStatus({
+        color: 'default',
+        message: 'Nerasta',
+      });
     }
-  };
-
-  handleInput = inputValue => {
-    const regexDigits = /\D/;
-    const regexTwoDigits = /(^[\d]{2})[\d]/;
-    const value = inputValue
-      .replace(regexDigits, '')
-      .replace(regexTwoDigits, '$1');
-    return value;
-  };
-
-  handleEnteredNumber = e => {
-    this.setState({ value: this.handleInput(e.target.value) });
   };
 
   handleEnteredNumberCrossout = e => {
@@ -145,7 +130,49 @@ class App extends Component {
       window.confirm('Ar tikrai norite pašalinti paskutinį ridentą kamuoliuką?')
     ) {
       this.setState({ rolledValues: this.state.rolledValues.slice(0, -1) });
-      this.resetStatusMessage();
+      this.resetStatus();
+    }
+  };
+
+  handleIsClickableChange = () => {
+    this.setState({
+      options: {
+        ...this.state.options,
+        isTicketsClickable: !this.state.options.isTicketsClickable,
+      },
+    });
+  };
+
+  enableEditMode = () => {
+    this.setState({
+      options: {
+        ...this.state.options,
+        isEditMode: true,
+        isTicketsClickable: false,
+      },
+    });
+  };
+
+  disableEditMode = () => {
+    this.setState({
+      options: {
+        ...this.state.options,
+        isEditMode: false,
+      },
+    });
+  };
+
+  handleEditModeChange = () => {
+    this.state.options.isEditMode
+      ? this.disableEditMode()
+      : this.enableEditMode();
+  };
+
+  removeTicketByIndex = id => {
+    if (window.confirm('Ar tikrai? Bus ištrintas pasirinktas bilietas.')) {
+      this.setState({
+        tickets: this.state.tickets.filter((item, index) => index !== id),
+      });
     }
   };
 
@@ -166,39 +193,12 @@ class App extends Component {
     this.componentUnmount();
   }
 
-  handleIsClickableChange = () => {
-    this.setState({
-      options: {
-        ...this.state.options,
-        isTicketsClickable: !this.state.options.isTicketsClickable,
-      },
-    });
+  openCreateTicketModal = () => {
+    this.setState({ modalCreateTicketOpen: true });
   };
 
-  handleEditModeChange = () => {
-    this.setState({
-      options: {
-        ...this.state.options,
-        isEditMode: !this.state.options.isEditMode,
-      },
-    });
-  };
-
-  disableEditMode = () => {
-    this.setState({
-      options: {
-        ...this.state.options,
-        isEditMode: false,
-      },
-    });
-  };
-
-  removeTicketByIndex = id => {
-    if (window.confirm('Ar tikrai? Bus ištrintas pasirinktas bilietas.')) {
-      this.setState({
-        tickets: this.state.tickets.filter((item, index) => index !== id),
-      });
-    }
+  closeCreateTicketModal = () => {
+    this.setState({ modalCreateTicketOpen: false });
   };
 
   render() {
@@ -208,10 +208,16 @@ class App extends Component {
       status,
       options: { isTicketsClickable, isEditMode },
       tickets,
+      modalCreateTicketOpen,
     } = this.state;
     const isReadyForPlay = !!tickets.length;
     return (
       <div className="App">
+        <ModalCreateTicket
+          isOpen={modalCreateTicketOpen}
+          addTicket={this.addTicket}
+          onRequestClose={this.closeCreateTicketModal}
+        />
         <div className="App__header pt-3 pb-2">
           <div className="container">
             <div className="row">
@@ -299,8 +305,8 @@ class App extends Component {
             {(isEditMode || !isReadyForPlay) && (
               <div className="col-12 col-md-6 col-lg-4">
                 <TicketPlaceholder
-                  demoHandler={this.getDemoTickets}
-                  addTicketHandler={this.addTicket}
+                  startDemoHandler={this.getDemoTickets}
+                  openCreateTicketModal={this.openCreateTicketModal}
                   isReadyForPlay={isReadyForPlay}
                   className="my-2"
                 />

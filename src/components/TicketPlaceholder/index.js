@@ -6,32 +6,34 @@ import './index.css';
 
 const TicketPlaceholder = ({
   className,
-  demoHandler,
-  addTicketHandler,
+  startDemoHandler,
+  openCreateTicketModal,
   isReadyForPlay,
   ...props
 }) => (
-  <div className={cx('TicketPlaceholder px-4 pb-5 pt-4', className)} {...props}>
-    <div className="py-5 mt-3">
-      <div>
+  <div
+    className={cx(
+      'TicketPlaceholder align-items-center d-flex justify-content-center my-2 px-4',
+      className
+    )}
+    {...props}
+  >
+    <div>
+      <button
+        type="button"
+        className="btn btn-outline-secondary my-2"
+        onClick={() => openCreateTicketModal()}
+      >
+        + Prideti bilietą
+      </button>
+      {!isReadyForPlay && (
         <button
           type="button"
           className="btn btn-outline-secondary my-2"
-          onClick={() => addTicketHandler()}
+          onClick={() => startDemoHandler()}
         >
-          + Prideti bilietą
+          Demonstracija
         </button>
-      </div>
-      {!isReadyForPlay && (
-        <div>
-          <button
-            type="button"
-            className="btn btn-outline-secondary my-2"
-            onClick={() => demoHandler()}
-          >
-            Demonstracija
-          </button>
-        </div>
       )}
     </div>
   </div>
