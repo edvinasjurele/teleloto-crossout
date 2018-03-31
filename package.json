@@ -1,5 +1,6 @@
 {
   "name": "loto",
+  "author": "Edvinas Jurele",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
