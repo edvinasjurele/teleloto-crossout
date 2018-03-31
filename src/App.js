@@ -44,7 +44,7 @@ class App extends Component {
     if (window.localStorage) {
       const cache = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
       if (cache != null) {
-        this.setState({ ...cache, value: '' }); // eslint-disable-line react/no-did-mount-set-state
+        this.setState({ ...cache, value: '', modalCreateTicketOpen: false }); // eslint-disable-line react/no-did-mount-set-state
       }
     }
     window.addEventListener('beforeunload', this.componentUnmount);
@@ -109,7 +109,7 @@ class App extends Component {
 
   crossOutNumber = number => {
     this.state.rolledValues.push(number.toString());
-    const count = this.countOccurencies(number);
+    const count = this.countOccurencies(number.toString());
     if (count > 0) {
       this.setStatus({
         color: 'green',
@@ -174,7 +174,6 @@ class App extends Component {
       options: {
         ...this.state.options,
         isEditMode: true,
-        isTicketsClickable: false,
       },
     });
   };
@@ -202,6 +201,7 @@ class App extends Component {
       this.setState({
         tickets: this.state.tickets.filter((item, index) => index !== id),
       });
+      this.setStatus({ message: 'Bilietas ištrintas! ' });
     }
   };
 
@@ -306,12 +306,10 @@ class App extends Component {
               <div key={index} className="col-12 col-md-6 col-lg-4">
                 <Ticket
                   ticketIndex={index}
-                  onTicketRemove={
-                    isEditMode ? this.removeTicketByIndex : undefined
-                  }
+                  onTicketRemove={isEditMode && this.removeTicketByIndex}
                   className="d-inline-block text-center my-2"
                   rolledValues={this.state.rolledValues}
-                  isClickable={isTicketsClickable}
+                  isClickable={!isEditMode && isTicketsClickable}
                   clickHandler={this.crossOutNumber}
                   {...ticket}
                 />

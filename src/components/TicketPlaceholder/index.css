@@ -1,1 +1,1 @@
-.TicketPlaceholder{font-family:'Courier New', Courier, monospace, sans-serif;border:1px dashed darkgrey;max-width:350px;min-height:293px;text-align:center;margin:0 auto}
+.TicketPlaceholder{font-family:'Courier New', Courier, monospace, sans-serif;border:1px dashed darkgrey;max-width:350px;min-height:293px;text-align:center;margin:0 auto}@media (max-width: 768px){.TicketPlaceholder{min-height:initial}}

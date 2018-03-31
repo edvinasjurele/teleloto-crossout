@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
+import cx from 'classnames';
 
 import './index.css';
 
@@ -15,14 +16,14 @@ const customStyles = {
   },
 };
 
-const ReactModal = ({ children, onRequestClose, ...props }) => (
+const ReactModal = ({ className, children, onRequestClose, ...props }) => (
   <Modal
     style={customStyles}
     contentLabel="Example Modal"
     ariaHideApp={false}
     shouldCloseOnOverlayClick={false}
     onRequestClose={onRequestClose}
-    className="Modal"
+    className={cx('Modal', className)}
     overlayClassName="Overlay"
     {...props}
   >
@@ -38,11 +39,13 @@ const ReactModal = ({ children, onRequestClose, ...props }) => (
 );
 
 ReactModal.propTypes = {
+  className: PropTypes.string,
   onRequestClose: PropTypes.func,
   children: PropTypes.node.isRequired,
 };
 
 ReactModal.defaultProps = {
+  className: undefined,
   onRequestClose: undefined,
 };
 

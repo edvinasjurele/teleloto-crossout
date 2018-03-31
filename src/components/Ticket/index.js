@@ -23,10 +23,18 @@ function Ticket({
   onTicketRemove,
   className,
   isEditable,
+  noBackground,
   ...props
 }) {
   return (
-    <div className={cx('Ticket px-4 pb-3 pt-4', className)} {...props}>
+    <div
+      className={cx(
+        'Ticket px-4 pb-3 pt-4',
+        { 'bg-lotto': !noBackground },
+        className
+      )}
+      {...props}
+    >
       {onTicketRemove && (
         <div
           className="Ticket__close"
@@ -87,6 +95,7 @@ function Ticket({
 }
 
 Ticket.propTypes = {
+  noBackground: PropTypes.bool,
   ticketIndex: PropTypes.number,
   values: requiredIf(
     PropTypes.arrayOf(PropTypes.array),
@@ -117,6 +126,7 @@ Ticket.propTypes = {
 };
 
 Ticket.defaultProps = {
+  noBackground: false,
   values: undefined,
   number: undefined,
   rolledValues: [],

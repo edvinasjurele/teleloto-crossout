@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _unique from 'lodash.uniq';
 import Modal from './Modal';
 
 import { handleLottoInput, handleLottoTicketInput } from '../utils';
@@ -17,6 +18,7 @@ class ModalCreateTicket extends React.Component {
       ],
       number: '',
     },
+    errorMessages: [],
   };
 
   handleTicketInputChange = inputData => {
@@ -36,14 +38,32 @@ class ModalCreateTicket extends React.Component {
     });
 
   addTicket = () => {
-    // TODO: validate given ticket to be valid
-    this.props.addTicket(this.state.editableTicketData);
+    const { number, values } = this.state.editableTicketData;
+
+    const isNumberValid = number.length === 7;
+
+    const singleArray = values.toString().split(',');
+    const allValuesOK = !singleArray.includes('') && !singleArray.includes('0');
+    const allValuesUnique = singleArray.length === _unique(singleArray).length;
+
+    if (allValuesOK && isNumberValid && allValuesUnique) {
+      this.setState({ errorMessages: [] });
+      this.props.addTicket(this.state.editableTicketData);
+    } else {
+      const errorMessages = [];
+      if (!isNumberValid) errorMessages.push('Netinkamas bilieto numeris');
+      if (!allValuesOK)
+        errorMessages.push('Yra tuščių arba netinkamų laukų verčių');
+      if (isNumberValid && allValuesOK && !allValuesUnique)
+        errorMessages.push('Yra pasikartojančių bilieto laukų');
+      this.setState({ errorMessages });
+    }
   };
 
   render() {
     const { addTicket, ...props } = this.props;
     return (
-      <Modal {...props}>
+      <Modal {...props} className="bg-lotto">
         <div className="text-center">
           <Ticket
             editableTicketData={this.state.editableTicketData}
@@ -51,13 +71,20 @@ class ModalCreateTicket extends React.Component {
             handleTicketInputChange={this.handleTicketInputChange}
             isEditable
           />
-          <button
-            type="button"
-            className="btn btn-outline-secondary my-2"
-            onClick={() => this.addTicket()}
-          >
-            + Prideti
-          </button>
+          <div className="px-4 pb-2">
+            <div className="text-left text-danger pb-2">
+              {this.state.errorMessages.map((message, index) => (
+                <p key={index}>&bull; {message}</p>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="btn btn-secondary btn-block my-2"
+              onClick={() => this.addTicket()}
+            >
+              + Pridėti
+            </button>
+          </div>
         </div>
       </Modal>
     );

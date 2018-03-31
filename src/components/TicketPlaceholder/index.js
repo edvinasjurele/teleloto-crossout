@@ -18,7 +18,7 @@ const TicketPlaceholder = ({
     )}
     {...props}
   >
-    <div>
+    <div className="my-3">
       <button
         type="button"
         className="btn btn-outline-secondary my-2"
