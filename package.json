@@ -3,6 +3,7 @@
   "author": "Edvinas Jurele",
   "version": "0.1.0",
   "private": true,
+  "homepage" : "http://eddjoke.github.io/teleloto-crossout",
   "dependencies": {
     "lodash.uniq": "^4.5.0",
     "node-sass-chokidar": "^1.2.2",
