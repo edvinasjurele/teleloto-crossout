@@ -41,6 +41,9 @@ const TicketPlaceholder = ({
 
 TicketPlaceholder.propTypes = {
   className: PropTypes.string,
+  startDemoHandler: PropTypes.func.isRequired,
+  openCreateTicketModal: PropTypes.func.isRequired,
+  isReadyForPlay: PropTypes.bool.isRequired,
 };
 
 TicketPlaceholder.defaultProps = {

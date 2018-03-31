@@ -26,7 +26,11 @@ const ReactModal = ({ children, onRequestClose, ...props }) => (
     overlayClassName="Overlay"
     {...props}
   >
-    <div className="Modal__close" onClick={() => onRequestClose()}>
+    <div
+      className="Modal__close"
+      onClick={() => onRequestClose()}
+      role="presentation"
+    >
       ✕
     </div>
     {children}
@@ -36,6 +40,10 @@ const ReactModal = ({ children, onRequestClose, ...props }) => (
 ReactModal.propTypes = {
   onRequestClose: PropTypes.func,
   children: PropTypes.node.isRequired,
+};
+
+ReactModal.defaultProps = {
+  onRequestClose: undefined,
 };
 
 export default ReactModal;

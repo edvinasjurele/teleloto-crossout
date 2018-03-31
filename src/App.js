@@ -11,6 +11,7 @@ import {
 } from './components';
 import { handleLottoInput } from './utils';
 import { DEMO_TICKETS } from './constants';
+
 const STORAGE_KEY = 'appState';
 
 class App extends Component {
@@ -39,26 +40,23 @@ class App extends Component {
     return initialState;
   };
 
+  componentDidMount() {
+    if (window.localStorage) {
+      const cache = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
+      if (cache != null) {
+        this.setState({ ...cache, value: '' }); // eslint-disable-line react/no-did-mount-set-state
+      }
+    }
+    window.addEventListener('beforeunload', this.componentUnmount);
+  }
+
+  componentWillUnmount() {
+    this.componentUnmount();
+  }
+
   getDemoTickets = () => {
     this.setState({ tickets: DEMO_TICKETS });
     this.disableEditMode();
-  };
-
-  addTicket = () => {
-    console.log('TODO: Add a ticket functionality');
-  };
-
-  resetState = () => {
-    this.setState(this.getInitialState());
-  };
-
-  removeLocalStorage = () => {
-    localStorage.removeItem(STORAGE_KEY);
-  };
-
-  pushStateToStorage = () => {
-    this.removeLocalStorage();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
   };
 
   setStatus = status => {
@@ -69,11 +67,36 @@ class App extends Component {
     this.setState({ status: this.getInitialState().status });
   };
 
+  resetState = () => {
+    this.setState(this.getInitialState());
+  };
+
+  removeLocalStorage = () => {
+    if (window.localStorage) window.localStorage.removeItem(STORAGE_KEY);
+  };
+
+  pushStateToStorage = () => {
+    this.removeLocalStorage();
+    if (window.localStorage)
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+  };
+
+  addTicket = () => {
+    // eslint-disable-next-line no-console
+    console.log('TODO: Add a ticket functionality');
+  };
+
   countOccurencies = number => {
     let occurenciesCount = 0;
     this.state.tickets.map(ticket => {
       const arr = ticket.values.toString().split(',');
-      occurenciesCount += arr.reduce((a, v) => (v === number ? ++a : a), 0);
+      occurenciesCount += arr.reduce((a, v) => {
+        if (v === number) {
+          const increment = a + 1;
+          return increment;
+        }
+        return a;
+      }, 0);
       return true;
     });
     return occurenciesCount;
@@ -104,7 +127,7 @@ class App extends Component {
 
   handleEnteredNumberCrossout = e => {
     e.preventDefault();
-    const value = this.state.value;
+    const { value } = this.state;
     if (
       value.length >= 1 &&
       value >= 1 &&
@@ -118,6 +141,7 @@ class App extends Component {
 
   invalidateCache = () => {
     if (
+      // eslint-disable-next-line no-alert
       window.confirm('Ar tikrai? Bus ištrinti bilietai ir kamuoliukų istorija.')
     ) {
       this.removeLocalStorage();
@@ -127,6 +151,7 @@ class App extends Component {
 
   removeLastRolledValue = () => {
     if (
+      // eslint-disable-next-line no-alert
       window.confirm('Ar tikrai norite pašalinti paskutinį ridentą kamuoliuką?')
     ) {
       this.setState({ rolledValues: this.state.rolledValues.slice(0, -1) });
@@ -163,12 +188,15 @@ class App extends Component {
   };
 
   handleEditModeChange = () => {
-    this.state.options.isEditMode
-      ? this.disableEditMode()
-      : this.enableEditMode();
+    if (this.state.options.isEditMode) {
+      this.disableEditMode();
+    } else {
+      this.enableEditMode();
+    }
   };
 
   removeTicketByIndex = id => {
+    // eslint-disable-next-line no-alert
     if (window.confirm('Ar tikrai? Bus ištrintas pasirinktas bilietas.')) {
       this.setState({
         tickets: this.state.tickets.filter((item, index) => index !== id),
@@ -180,18 +208,6 @@ class App extends Component {
     this.pushStateToStorage();
     window.removeEventListener('beforeunload', this.componentUnmount);
   };
-
-  componentWillMount() {
-    var cache = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (cache != null) {
-      this.setState({ ...cache, value: '' });
-    }
-    window.addEventListener('beforeunload', this.componentUnmount);
-  }
-
-  componentWillUnmount() {
-    this.componentUnmount();
-  }
 
   openCreateTicketModal = () => {
     this.setState({ modalCreateTicketOpen: true });
@@ -260,10 +276,10 @@ class App extends Component {
             {rolledValues.length ? (
               <div className="d-flex align-items-center w-100">
                 <div style={{ flex: 1 }}>
-                  {rolledValues.map((value, index) => (
+                  {rolledValues.map((rolledValue, index) => (
                     <Sphere
                       key={index}
-                      value={value}
+                      value={rolledValue}
                       className="d-inline-block mr-1 my-1"
                     />
                   ))}
@@ -288,16 +304,14 @@ class App extends Component {
             {tickets.map((ticket, index) => (
               <div key={index} className="col-12 col-md-6 col-lg-4">
                 <Ticket
-                  index={index}
+                  ticketIndex={index}
                   onTicketRemove={
-                    isEditMode
-                      ? value => this.removeTicketByIndex(value)
-                      : undefined
+                    isEditMode ? this.removeTicketByIndex : undefined
                   }
                   className="d-inline-block text-center my-2"
                   rolledValues={this.state.rolledValues}
                   isClickable={isTicketsClickable}
-                  clickHandler={value => this.crossOutNumber(value)}
+                  clickHandler={this.crossOutNumber}
                   // isEditable
                   {...ticket}
                 />

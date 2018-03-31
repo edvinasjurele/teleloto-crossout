@@ -3,3 +3,5 @@ node_modules
 
 # Project specific
 /public
+/src/App.test.js
+/src/registerServiceWorker.js

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import requiredIf from 'react-required-if';
 import cx from 'classnames';
-import { TicketField, EditableInput } from '../';
 
+import { TicketField, EditableInput } from '../';
 import './index.css';
 
 import { handleLottoInput, handleLottoTicketInput, padZero } from '../../utils';
@@ -26,11 +27,11 @@ class Ticket extends React.Component {
   handleInputChange = inputData => {
     const { id, value } = inputData;
     const [x, y] = id.split('_');
-    const newValues = this.state.editableTicket.values;
+    const newValues = [...this.state.editableTicket.values];
     newValues[x][y] = handleLottoInput(value);
-    this.setState({ ...this.state.editableTicket, values: newValues });
-    console.log(inputData);
-    console.log(this.state.editableTicket);
+    this.setState({ ...this.state.editableTicket });
+    // console.log(inputData);
+    // console.log(this.state.editableTicket);
   };
 
   handleTicketNumberChange = e =>
@@ -43,7 +44,7 @@ class Ticket extends React.Component {
 
   render() {
     const {
-      index,
+      ticketIndex,
       values,
       rolledValues,
       number,
@@ -60,7 +61,7 @@ class Ticket extends React.Component {
           <a
             href="#remove"
             className="Ticket__close"
-            onClick={() => onTicketRemove(index)}
+            onClick={() => onTicketRemove(ticketIndex)}
           >
             ✕
           </a>
@@ -117,15 +118,25 @@ class Ticket extends React.Component {
 }
 
 Ticket.propTypes = {
+  ticketIndex: PropTypes.number,
   values: PropTypes.arrayOf(PropTypes.array.isRequired).isRequired,
   rolledValues: PropTypes.arrayOf(PropTypes.string),
   number: PropTypes.string.isRequired,
   className: PropTypes.string,
+  isClickable: PropTypes.bool,
+  isEditable: PropTypes.bool,
+  clickHandler: requiredIf(PropTypes.func, props => props.isEditable),
+  onTicketRemove: requiredIf(PropTypes.func, props => props.isEditable),
 };
 
 Ticket.defaultProps = {
   rolledValues: [],
+  ticketIndex: undefined,
   className: undefined,
+  isClickable: undefined,
+  isEditable: undefined,
+  clickHandler: undefined,
+  onTicketRemove: undefined,
 };
 
 export default Ticket;

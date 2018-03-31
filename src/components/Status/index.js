@@ -13,6 +13,7 @@ const Status = ({ color, message }) => {
 };
 
 Status.propTypes = {
+  message: PropTypes.string.isRequired,
   color: PropTypes.oneOf(['green', 'default']).isRequired,
 };
 

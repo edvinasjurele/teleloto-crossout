@@ -24,10 +24,12 @@ EditableInput.propTypes = {
   placeholder: PropTypes.string,
   id: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  isTransparent: PropTypes.bool,
 };
 
 EditableInput.defaultProps = {
   placeholder: undefined,
+  isTransparent: undefined,
 };
 
 export default EditableInput;

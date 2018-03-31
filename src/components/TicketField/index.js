@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
+import requiredIf from 'react-required-if';
 
 import { EditableInput } from '../';
 
@@ -9,7 +10,6 @@ import './index.css';
 class TicketField extends React.Component {
   handleEnteredNumber = e => {
     const { id, value } = e.target;
-    console.log(e.target);
     this.props.onChange({ id, value });
   };
 
@@ -35,6 +35,7 @@ class TicketField extends React.Component {
         )}
         onClick={shouldInteract ? () => clickHandler(+value) : undefined}
         {...props}
+        role="presentation"
       >
         {isEditable ? (
           <EditableInput
@@ -53,12 +54,22 @@ class TicketField extends React.Component {
 }
 
 TicketField.propTypes = {
+  id: requiredIf(PropTypes.string, props => props.isEditable),
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  onChange: requiredIf(PropTypes.func, props => props.isEditable),
+  clickHandler: requiredIf(PropTypes.func, props => props.shouldInteract),
   isCrossedOut: PropTypes.bool,
+  isClickable: PropTypes.bool,
+  isEditable: PropTypes.bool,
 };
 
 TicketField.defaultProps = {
+  id: undefined,
+  onChange: undefined,
+  clickHandler: undefined,
   isCrossedOut: false,
+  isClickable: false,
+  isEditable: false,
 };
 
 export default TicketField;
