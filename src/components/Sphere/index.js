@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 
 import './index.css';
+import { padZero } from '../../utils';
 
 const Sphere = ({ value, className }) => {
   const getSphereColor = color => {
@@ -15,7 +16,7 @@ const Sphere = ({ value, className }) => {
 
   return (
     <div className={cx('Sphere', className, getSphereColor())}>
-      {value.toString().length === 1 ? `0${value}` : value}
+      {padZero(value)}
     </div>
   );
 };

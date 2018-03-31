@@ -1,0 +1,10 @@
+.EditableInput {
+  padding: 0px;
+  width: 100%;
+  border: 0;
+  outline: none;
+
+  &--transparent {
+    background: transparent;
+  }
+}

@@ -23,8 +23,7 @@ class ModalCreateTicket extends React.Component {
     return (
       <Modal {...this.props}>
         <div className="text-center">
-          {/* TODO: make editable ticket inputs */}
-          <Ticket {...this.state.ticket} />
+          <Ticket isEditable />
           <button
             type="button"
             className="btn btn-outline-secondary my-2"

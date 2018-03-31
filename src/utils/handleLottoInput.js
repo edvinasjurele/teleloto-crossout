@@ -1,6 +1,7 @@
+import filterDigits from './filterDigits';
+
 const handleLottoInput = inputValue => {
-  const regexDigits = /\D/;
-  const value = inputValue.replace(regexDigits, '');
+  const value = filterDigits(inputValue);
 
   // dissalow first digit to be >7
   if (value.length === 1 && value > 7) return '';

@@ -298,6 +298,7 @@ class App extends Component {
                   rolledValues={this.state.rolledValues}
                   isClickable={isTicketsClickable}
                   clickHandler={value => this.crossOutNumber(value)}
+                  // isEditable
                   {...ticket}
                 />
               </div>
