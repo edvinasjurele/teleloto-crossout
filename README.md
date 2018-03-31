@@ -4,4 +4,8 @@ Lotto Crossout simplifies the process of crossing out your lottery tickets, when
 
 The app is initially designed to play Lithuanian national lottery **TELELOTO**.
 
+## Demo
+
+[https://eddjoke.github.io/teleloto-crossout/](https://eddjoke.github.io/teleloto-crossout/)
+
 Good luck with your lottery!
