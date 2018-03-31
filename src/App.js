@@ -81,9 +81,10 @@ class App extends Component {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
   };
 
-  addTicket = () => {
-    // eslint-disable-next-line no-console
-    console.log('TODO: Add a ticket functionality');
+  addTicket = ticketData => {
+    this.state.tickets.push(ticketData);
+    this.closeCreateTicketModal();
+    this.setStatus({ color: 'green', message: 'Bilietas pridėtas!' });
   };
 
   countOccurencies = number => {
@@ -312,7 +313,6 @@ class App extends Component {
                   rolledValues={this.state.rolledValues}
                   isClickable={isTicketsClickable}
                   clickHandler={this.crossOutNumber}
-                  // isEditable
                   {...ticket}
                 />
               </div>
