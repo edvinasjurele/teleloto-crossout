@@ -8,6 +8,7 @@ import {
   Input,
   Status,
   ModalCreateTicket,
+  ConfirmationModal,
 } from './components';
 import { handleLottoInput } from './utils';
 import { DEMO_TICKETS } from './constants';
@@ -17,7 +18,7 @@ const STORAGE_KEY = 'appState';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = this.getInitialState();
+    this.state = { ...this.getInitialState() };
   }
 
   getInitialState = () => {
@@ -35,6 +36,12 @@ class App extends Component {
       },
       tickets: [],
       modalCreateTicketOpen: false,
+      confirmationModal: {
+        isOpen: false,
+        title: undefined,
+        message: undefined,
+        onConfirmed: undefined,
+      },
     };
 
     return initialState;
@@ -44,7 +51,18 @@ class App extends Component {
     if (window.localStorage) {
       const cache = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
       if (cache != null) {
-        this.setState({ ...cache, value: '', modalCreateTicketOpen: false }); // eslint-disable-line react/no-did-mount-set-state
+        // eslint-disable-next-line react/no-did-mount-set-state
+        this.setState({
+          ...cache,
+          value: '',
+          modalCreateTicketOpen: false,
+          confirmationModal: {
+            isOpen: false,
+            title: undefined,
+            message: undefined,
+            onConfirmed: undefined,
+          },
+        });
       }
     }
     window.addEventListener('beforeunload', this.componentUnmount);
@@ -92,7 +110,7 @@ class App extends Component {
     this.state.tickets.map(ticket => {
       const arr = ticket.values.toString().split(',');
       occurenciesCount += arr.reduce((a, v) => {
-        if (v === number) {
+        if ((+v).toString() === number) {
           const increment = a + 1;
           return increment;
         }
@@ -141,23 +159,29 @@ class App extends Component {
   };
 
   invalidateCache = () => {
-    if (
-      // eslint-disable-next-line no-alert
-      window.confirm('Ar tikrai? Bus ištrinti bilietai ir kamuoliukų istorija.')
-    ) {
-      this.removeLocalStorage();
-      this.resetState();
-    }
+    this.confirm(
+      {
+        title: 'Ar tikrai?',
+        message: 'Bus ištrinti bilietai ir kamuoliukų istorija.',
+      },
+      () => {
+        this.removeLocalStorage();
+        this.resetState();
+      }
+    );
   };
 
   removeLastRolledValue = () => {
-    if (
-      // eslint-disable-next-line no-alert
-      window.confirm('Ar tikrai norite pašalinti paskutinį ridentą kamuoliuką?')
-    ) {
-      this.setState({ rolledValues: this.state.rolledValues.slice(0, -1) });
-      this.resetStatus();
-    }
+    this.confirm(
+      {
+        title: 'Ar tikrai?',
+        message: 'Bus pašalintas paskutinis ridentas kamuoliukas',
+      },
+      () => {
+        this.setState({ rolledValues: this.state.rolledValues.slice(0, -1) });
+        this.resetStatus();
+      }
+    );
   };
 
   handleIsClickableChange = () => {
@@ -196,13 +220,18 @@ class App extends Component {
   };
 
   removeTicketByIndex = id => {
-    // eslint-disable-next-line no-alert
-    if (window.confirm('Ar tikrai? Bus ištrintas pasirinktas bilietas.')) {
-      this.setState({
-        tickets: this.state.tickets.filter((item, index) => index !== id),
-      });
-      this.setStatus({ message: 'Bilietas ištrintas! ' });
-    }
+    this.confirm(
+      {
+        title: 'Ar tikrai?',
+        message: 'Bus ištrintas pasirinktas bilietas.',
+      },
+      () => {
+        this.setState({
+          tickets: this.state.tickets.filter((item, index) => index !== id),
+        });
+        this.setStatus({ message: 'Bilietas ištrintas! ' });
+      }
+    );
   };
 
   componentUnmount = () => {
@@ -218,6 +247,27 @@ class App extends Component {
     this.setState({ modalCreateTicketOpen: false });
   };
 
+  confirm = (data, onConfirmed) => {
+    this.setState({
+      confirmationModal: {
+        isOpen: true,
+        ...data,
+        onConfirmed,
+      },
+    });
+  };
+
+  closeConfirmationModal = () => {
+    this.setState({
+      confirmationModal: {
+        isOpen: false,
+        title: undefined,
+        message: undefined,
+        onConfirm: undefined,
+      },
+    });
+  };
+
   render() {
     const {
       rolledValues,
@@ -226,6 +276,7 @@ class App extends Component {
       options: { isTicketsClickable, isEditMode },
       tickets,
       modalCreateTicketOpen,
+      confirmationModal,
     } = this.state;
     const isReadyForPlay = !!tickets.length;
     return (
@@ -234,6 +285,10 @@ class App extends Component {
           isOpen={modalCreateTicketOpen}
           addTicket={this.addTicket}
           onRequestClose={this.closeCreateTicketModal}
+        />
+        <ConfirmationModal
+          {...confirmationModal}
+          onRequestClose={this.closeConfirmationModal}
         />
         <div className="App__header pt-3 pb-2">
           <div className="container">

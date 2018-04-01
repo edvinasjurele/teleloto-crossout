@@ -7,6 +7,7 @@ import Input from './Input';
 import Status from './Status';
 import Modal from './Modal';
 import ModalCreateTicket from './ModalCreateTicket';
+import ConfirmationModal from './ConfirmationModal';
 
 export {
   Ticket,
@@ -18,4 +19,5 @@ export {
   Status,
   Modal,
   ModalCreateTicket,
+  ConfirmationModal,
 };

@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _unique from 'lodash.uniq';
-import Modal from './Modal';
 
-import { handleLottoInput, handleLottoTicketInput } from '../utils';
+import Modal from './Modal';
 import Ticket from './Ticket';
+import { handleLottoInput, handleLottoTicketInput, padZero } from '../utils';
 
 class ModalCreateTicket extends React.Component {
   state = {
@@ -42,13 +42,21 @@ class ModalCreateTicket extends React.Component {
 
     const isNumberValid = number.length === 7;
 
-    const singleArray = values.toString().split(',');
+    // normalize, so 0 and 02 is treated the same
+    const normalizedValues = values.map(row =>
+      row.map(element => padZero(element))
+    );
+
+    const singleArray = normalizedValues
+      .toString()
+      .split(',')
+      .map(padZero);
     const allValuesOK = !singleArray.includes('') && !singleArray.includes('0');
     const allValuesUnique = singleArray.length === _unique(singleArray).length;
-
     if (allValuesOK && isNumberValid && allValuesUnique) {
       this.setState({ errorMessages: [] });
-      this.props.addTicket(this.state.editableTicketData);
+
+      this.props.addTicket({ number, values: normalizedValues });
     } else {
       const errorMessages = [];
       if (!isNumberValid) errorMessages.push('Netinkamas bilieto numeris');

@@ -24,7 +24,7 @@ const TicketPlaceholder = ({
         className="btn btn-outline-secondary my-2"
         onClick={() => openCreateTicketModal()}
       >
-        + Prideti bilietą
+        + Pridėti bilietą
       </button>
       {!isReadyForPlay && (
         <button
