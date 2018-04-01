@@ -92,7 +92,7 @@ class App extends Component {
     this.state.tickets.map(ticket => {
       const arr = ticket.values.toString().split(',');
       occurenciesCount += arr.reduce((a, v) => {
-        if (v === number) {
+        if ((+v).toString() === number) {
           const increment = a + 1;
           return increment;
         }

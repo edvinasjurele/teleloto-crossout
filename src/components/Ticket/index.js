@@ -56,17 +56,18 @@ function Ticket({
           {(isEditable ? editableTicketData.values : values).map(
             (row, index) => (
               <tr key={index}>
-                {row.map((collumn, index2) => (
+                {row.map((element, index2) => (
                   <TicketField
                     key={index2}
                     isCrossedOut={
-                      !isEditable && rolledValues.includes(collumn.toString())
+                      !isEditable &&
+                      rolledValues.includes((+element).toString())
                     }
                     isClickable={isClickable}
                     clickHandler={clickHandler}
                     onChange={handleTicketInputChange}
                     id={`${index}_${index2}`}
-                    value={isEditable ? collumn : padZero(collumn)}
+                    value={isEditable ? element : padZero(element)}
                     isEditable={isEditable}
                   />
                 ))}
