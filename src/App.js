@@ -48,8 +48,8 @@ class App extends Component {
   };
 
   componentDidMount() {
-    if (window.localStorage) {
-      const cache = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
+    if (window.sessionStorage) {
+      const cache = JSON.parse(window.sessionStorage.getItem(STORAGE_KEY));
       if (cache != null) {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
@@ -89,14 +89,14 @@ class App extends Component {
     this.setState(this.getInitialState());
   };
 
-  removeLocalStorage = () => {
-    if (window.localStorage) window.localStorage.removeItem(STORAGE_KEY);
+  removeSessionStorage = () => {
+    if (window.sessionStorage) window.sessionStorage.removeItem(STORAGE_KEY);
   };
 
   pushStateToStorage = () => {
-    this.removeLocalStorage();
-    if (window.localStorage)
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+    this.removeSessionStorage();
+    if (window.sessionStorage)
+      window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
   };
 
   addTicket = ticketData => {
@@ -165,7 +165,7 @@ class App extends Component {
         message: 'Bus ištrinti bilietai ir kamuoliukų istorija.',
       },
       () => {
-        this.removeLocalStorage();
+        this.removeSessionStorage();
         this.resetState();
       }
     );
