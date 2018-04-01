@@ -14,12 +14,13 @@
     "react-scripts": "1.1.1"
   },
   "scripts": {
-    "build-css": "node-sass-chokidar src/ -o src/",
+    "build-css": "node-sass-chokidar src/ -o src/ --output-style compressed",
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive --output-style compressed",
     "start-js": "react-scripts start",
     "start": "npm-run-all -p watch-css start-js",
     "build-js": "react-scripts build",
     "build": "npm-run-all build-css build-js",
+    "build:deploy": "PUBLIC_URL=/teleloto-crossout/ npm-run-all build-css build-js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint src"
