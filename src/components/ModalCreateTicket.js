@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _unique from 'lodash.uniq';
-import Modal from './Modal';
 
-import { handleLottoInput, handleLottoTicketInput, padZero } from '../utils';
+import Modal from './Modal';
 import Ticket from './Ticket';
+import { handleLottoInput, handleLottoTicketInput, padZero } from '../utils';
 
 class ModalCreateTicket extends React.Component {
   state = {
